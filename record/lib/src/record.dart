@@ -111,6 +111,11 @@ class AudioRecorder {
     });
   }
 
+  Future<void> stopAmplitudeStream() async {
+    await _amplitudeStreamCtrl?.close();
+    _amplitudeStreamCtrl = null;
+  }
+
   /// Stops and discards/deletes the file/blob.
   Future<void> cancel() async {
     return _safeCall(() async {
