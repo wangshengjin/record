@@ -20,8 +20,9 @@ dependencies:
   record_linux: '>=0.5.0 <1.0.0'
   record_android: ^1.1.0
   record_darwin:
-    git: https://github.com/wangshengjin/record.git
-    path: record_darwin
+    git: 
+      url: https://github.com/wangshengjin/record.git
+      path: record_darwin
     # path: /Users/wangshengjin/Documents/workspace/libs/record/record_darwin
 
 dev_dependencies:
