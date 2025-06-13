@@ -14,22 +14,26 @@ class RecorderFileDelegate: NSObject, AudioRecordingFileDelegate, AVAudioRecorde
 
   func start(config: RecordConfig, path: String) throws {
     try deleteFile(path: path)
-
-    try initAVAudioSession(config: config)
-
-    let url = URL(fileURLWithPath: path)
-
-    let recorder = try AVAudioRecorder(url: url, settings: getOutputSettings(config: config))
-
-    recorder.delegate = self
-    recorder.isMeteringEnabled = true
-    recorder.prepareToRecord()
     
-    recorder.record()
-    
-    audioRecorder = recorder
-    self.path = path
-  }
+    DispatchQueue.global(qos: .userInitiated).async {
+        do {
+            try self.initAVAudioSession(config: config)
+            let url = URL(fileURLWithPath: path)
+            let recorder = try AVAudioRecorder(url: url, settings: self.getOutputSettings(config: config))
+            recorder.delegate = self
+            recorder.isMeteringEnabled = true
+            recorder.prepareToRecord()
+            recorder.record()
+            
+            DispatchQueue.main.async {
+                self.audioRecorder = recorder
+                self.path = path
+            }
+        } catch {
+            print("Recording start error: \(error.localizedDescription)")
+        }
+    }
+}
 
   func stop(completionHandler: @escaping (String?) -> ()) {
     audioRecorder?.stop()
